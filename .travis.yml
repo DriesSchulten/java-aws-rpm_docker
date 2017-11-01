@@ -1,0 +1,25 @@
+language: python
+
+python:
+  - 2.7
+sudo: required
+
+services:
+  - docker
+
+env:
+  global:
+    - REPO=driesschulten/driesschulten/aws-java-rpm
+    - secure: uYJ/QY9LPdLWURTk34sgnpkAYKyrjnzCG/fmw4IdX+SBS1QlkGjjFIlcGXMNPJ+OCMImPgSGYIWl3sygtPSyqEQZgl+K+NzaERpcHeVUKcodeviHQKczSNWHVrMu49O+SCCbl7qu0Uqnxgzsvsqw6SQZ2vRuG5J1FXoKsWcYSi+hL26ZELlrKiXRTxgGieevGwEKTqS8MXu9c3lJQTOCuN5mvK+C0rfaqVK3i4ESX7MYpZO0aIkqxaTUe+6+6seUkd19JOvEVuJksnefbo9jyJVkemR/GjoXLrEsk7x5zbrKXIbheSA88fcs6o+Uevv3gj+vO41/jl35MYvXROA9szKMi3z0z4ySy84+E3+wmFen8g6xyeqRbZPiy0QBW0rbDzGxE/ktx7vfjFWGW1hIzT13Vzc5yB6PEFt2Is4JjrrWYjQ4BaUQ0yB2tPZfp9dDlvp8O8ISaW+zi8LsdIUjyK2n9ltcxciAAbemeRK0Qg0qsozY0zlYST4Yaskc/9/qEyC8hbzQgkcLWDZucQLQZc+VkzmfCC0HCb+5DPUkDJ3oyznLpXp0DhmFZWVEKYEqi6sPYHk2rnKASGyowwr3zeMWG4n2aaoRHKuoiTx4MTyUe7VlwEPDr1X9/nToobyE1mI9ulDYKy4KoigaXIP89WwYXuIbl9ioMcc9Kd+CJJg=
+    - secure: Z6kNcDBdb9GTCe0JZNjj3vIQB8x6Sc6f28RLnl+smem/ulfTQy69q4cyhQ7ai/8eN1mrE7uWum7QdGIrdNh+lMRUId8i38pMu/TQ2+shw/Iv2qEb2oVBZVBJI1PSewLrJTaTSCdkUDj3w9JYBpt3tEWoFocmZ81ZNIWQErbX0Ap8vBBTeAk6+7uGQJMpbks/1VQ0Vg7kAs+okyaAk3F3LtpfeEqbYyCf6tgkYEv7W4w+jZtt8D0Kn+d9dJ0Gyntf9nX4INJRhuwNud5mvvXW8KTgxwwuJoILgzkJ/YbpuoEx4cHJYwDcsUWkJmrzAyAInVh10s9g3BVZl2z2U6/nG6W/aMv8jn3YhZrE0sivU91E2IUsJCJloEueUP0hMnZ2eVGRiq3O87m3cL5fGmJtSLrAnVdxT4CL2SpLYXeVqV2EovBNbvM24aMT0TsELaP6xDr2ezoukjqtd6HrZq91ANoidKjU+LdNDDa2fKliL6q+nfXnkm4TTMg4RSBm15/Dq2y81/YtbpvMTqKldu4sQQgrqs+9ah9lQVDBAVtokFt0qDZqrpANDlzhLzdLBFu7PIF05NQrgD9PkqbvwB4SjfFQoLeXMqsoGSFOAvykn4hBJ3ciBZluEPWQmIKEJAmaQALudRx5gkYI7rcnvfd/mjq11uwwODzuJ42JXsis5+c=
+
+install:
+  - docker build -t $REPO .
+
+script: echo 'no tests!'
+
+after_success:
+  - docker login -u="$DOCKER_USER" -p="$DOCKER_PASS"
+  - docker tag $REPO $REPO:latest
+  - if [[ $TRAVIS_TAG ]]; then docker tag $REPO $REPO:$TRAVIS_TAG; fi
+  - docker push $REPO
